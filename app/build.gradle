@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-//    id 'androidx.navigation.safeargs'
+    id 'androidx.navigation.safeargs'
     id 'kotlin-kapt'
 }
 
@@ -46,8 +46,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 //    // Navigation
-//    implementation("androidx.navigation:navigation-fragment-ktx:$version_navigation")
-//    implementation("androidx.navigation:navigation-ui-ktx:2.5.1:$version_navigation")
+    implementation("androidx.navigation:navigation-fragment-ktx:$version_navigation")
+    implementation("androidx.navigation:navigation-ui-ktx:$version_navigation")
 
     //Room
     implementation("androidx.room:room-runtime:$version_room")
