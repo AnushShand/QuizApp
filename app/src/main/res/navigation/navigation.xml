@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/titleFragment">
-
+    app:startDestination="@id/gameFragment">
     <fragment
-        android:id="@+id/titleFragment"
-        android:name="com.example.quizapp.screens.title.TitleFragment"
-        android:label="fragment_title"
-        tools:layout="@layout/fragment_title" />
+        android:id="@+id/gameFragment"
+        android:name="com.example.quizapp.screens.game.GameFragment"
+        android:label="fragment_game"
+        tools:layout="@layout/fragment_game" />
 </navigation>
