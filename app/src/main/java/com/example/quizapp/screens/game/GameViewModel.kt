@@ -1,15 +1,37 @@
 package com.example.quizapp.screens.game
+import android.os.CountDownTimer
+import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.quizapp.OptionButton
-import com.example.quizapp.R
-
 
 class GameViewModel : ViewModel() {
+    companion object{
+        private const val ONE_SECOND=1000L
+        private const val COUNTDOWN_TIME=35000L
+    }
+
     data class Question(val text:String,val choices:MutableList<String>)
     private lateinit var questionList:MutableList<Question>
+
+    private val timer:CountDownTimer
+
+    private val _currentQuestionNo=MutableLiveData<Int>()
+    val currentQuestionNo:LiveData<Int>
+        get()=_currentQuestionNo
+
+    private val _currentTime=MutableLiveData<Long>()
+    val currentTime:LiveData<Long>
+        get()=_currentTime
+
+    private val _totalTime=MutableLiveData<Long>()
+    val totalTime:LiveData<Long>
+        get()=_totalTime
+
+    private val _score=MutableLiveData<Int>()
+    val score:LiveData<Int>
+        get()=_score
 
     private val _currentQuestion=MutableLiveData<Question>()
     val currentQuestion:LiveData<Question>
@@ -23,16 +45,42 @@ class GameViewModel : ViewModel() {
     val incorrectOption:LiveData<Int>
         get()=_incorrectOption
 
+    private val _correctOption=MutableLiveData<Int>()
+    val correctOption:LiveData<Int>
+        get()=_correctOption
+
+    private val _gameOver=MutableLiveData<Boolean>()
+    val gameOver:LiveData<Boolean>
+        get()=_gameOver
+
     init{
+        _score.value=0
+        _totalTime.value=0L
+        _currentQuestionNo.value=0
         resetQuestions()
         nextQuestion()
+        timer=object: CountDownTimer(COUNTDOWN_TIME, 1000)
+        {
+            override fun onTick(p0: Long) {
+                _currentTime.value=p0/ 1000
+            }
+            override fun onFinish() {
+                onIncorrect()
+            }
+        }.start()
     }
+
     private fun nextQuestion()
     {
         _currentAnswer.value=questionList[0].choices[0]
         questionList[0].choices.shuffle()
         _currentQuestion.value=questionList.removeAt(0)
+
+        _currentQuestionNo.value=currentQuestionNo.value!!+1
+        if(currentQuestionNo.value!!>10)
+            _gameOver.value=true
     }
+
     private fun resetQuestions()
     {
         //First Option will always be the correct answer before shuffling
@@ -52,24 +100,34 @@ class GameViewModel : ViewModel() {
         )
         questionList.shuffle()
     }
+
     fun checkAnswer(optionSelected:Int)
     {
         if(_currentQuestion.value!!.choices[optionSelected]==_currentAnswer.value)
             onCorrect()
         else
             onIncorrect(optionSelected)
-
     }
-    private fun onCorrect(){
+
+    private fun onCorrect()
+    {
+        _totalTime.value=totalTime.value!!+(COUNTDOWN_TIME/ONE_SECOND-currentTime.value!!)
+        _score.value=score.value!!+1
         nextQuestion()
+        timer.cancel()
+        timer.start()
     }
 
     private fun onIncorrect(optionSelected: Int=-1) {
+        timer.cancel()
+        _correctOption.value=_currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
         _incorrectOption.value=optionSelected
-        Log.i("GameViewModel","Incorrect Answer")
+        Handler().postDelayed({ _gameOver.value=true }, 3000)
     }
 
     override fun onCleared() {
+        Log.i("GameViewModel","Cleared")
         super.onCleared()
+        timer.cancel()
     }
 }

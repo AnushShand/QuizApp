@@ -23,8 +23,10 @@ class OptionButton:AppCompatButton{
     }
     fun setCorrect(Correct: Boolean) {
         IsCorrect = Correct
+        refreshDrawableState()
     }
     fun setIncorrect(Incorrect: Boolean) {
         IsIncorrect = Incorrect
+        refreshDrawableState()
     }
 }

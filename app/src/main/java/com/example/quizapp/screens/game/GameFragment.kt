@@ -1,49 +1,79 @@
 package com.example.quizapp.screens.game
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.quizapp.R
 import com.example.quizapp.databinding.FragmentGameBinding
-import com.example.quizapp.OptionButton
 
 class GameFragment : Fragment() {
 
     private lateinit var viewModel: GameViewModel
     private lateinit var binding:FragmentGameBinding
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
+    {
         binding=DataBindingUtil.inflate(inflater,R.layout.fragment_game,container,false)
-        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        viewModel = ViewModelProvider(this)[GameViewModel::class.java]
         binding.gameViewModel=viewModel
-        binding.setLifecycleOwner(this)
-        viewModel.incorrectOption.observe(viewLifecycleOwner, Observer { it->
+        binding.lifecycleOwner = this
 
-            Log.i("GameViewModel",it.toString())
-            when(it)
-            {
-                0-> {
+        viewModel.currentQuestionNo.observe(viewLifecycleOwner){
+            (activity as AppCompatActivity).supportActionBar?.title = "Question $it/10"
+        }
+
+
+        viewModel.gameOver.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(GameFragmentDirections.actionGameFragmentToScoreFragment())
+            }
+        }
+        viewModel.incorrectOption.observe(viewLifecycleOwner) {
+            when (it) {
+                0 -> {
                     binding.option1.setIncorrect(true)
                 }
-                1-> {
+                1 -> {
                     binding.option2.setIncorrect(true)
                 }
-                2-> {
+                2 -> {
                     binding.option3.setIncorrect(true)
                 }
-                3-> {
+                3 -> {
                     binding.option4.setIncorrect(true)
                 }
-                else->{}
+                else -> {}
             }
-        })
+        }
+
+        viewModel.correctOption.observe(viewLifecycleOwner) {
+            when (it) {
+                0 -> {
+                    binding.option1.setCorrect(true)
+                    binding.option1.isClickable = false
+                }
+                1 -> {
+                    binding.option2.setCorrect(true)
+                    binding.option2.isClickable = false
+                }
+                2 -> {
+                    binding.option3.setCorrect(true)
+                    binding.option3.isClickable = false
+                }
+                3 -> {
+                    binding.option4.setCorrect(true)
+                    binding.option4.isClickable = false
+                }
+                else -> {}
+            }
+        }
         return binding.root
     }
+
 }
