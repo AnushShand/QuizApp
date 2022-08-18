@@ -76,4 +76,16 @@ class GameFragment : Fragment() {
         return binding.root
     }
 
+    override fun onPause() {
+        super.onPause()
+        viewModel.pauseTimer()
+        Log.i("GameFragment","Paused")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.startTimer()
+        Log.i("GameFragment","Resumed")
+    }
+
 }

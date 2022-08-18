@@ -15,7 +15,7 @@ class GameViewModel : ViewModel() {
     data class Question(val text:String,val choices:MutableList<String>)
     private lateinit var questionList:MutableList<Question>
 
-    private val timer:CountDownTimer
+    private lateinit var timer:CountDownTimer
 
     private val _currentQuestionNo=MutableLiveData<Int>()
     val currentQuestionNo:LiveData<Int>
@@ -24,6 +24,10 @@ class GameViewModel : ViewModel() {
     private val _currentTime=MutableLiveData<Long>()
     val currentTime:LiveData<Long>
         get()=_currentTime
+
+    private val _timeLeft=MutableLiveData<Long>()
+    val timeLeft:LiveData<Long>
+        get()=_timeLeft
 
     private val _totalTime=MutableLiveData<Long>()
     val totalTime:LiveData<Long>
@@ -57,17 +61,20 @@ class GameViewModel : ViewModel() {
         _score.value=0
         _totalTime.value=0L
         _currentQuestionNo.value=0
+        _timeLeft.value= COUNTDOWN_TIME
         resetQuestions()
         nextQuestion()
-        timer=object: CountDownTimer(COUNTDOWN_TIME, 1000)
-        {
-            override fun onTick(p0: Long) {
-                _currentTime.value=p0/ 1000
-            }
-            override fun onFinish() {
-                onIncorrect()
-            }
-        }.start()
+
+//        startTimer(COUNTDOWN_TIME)
+//        timer=object: CountDownTimer(COUNTDOWN_TIME, 1000)
+//        {
+//            override fun onTick(p0: Long) {
+//                _currentTime.value=p0/ 1000
+//            }
+//            override fun onFinish() {
+//                onIncorrect()
+//            }
+//        }.start()
     }
 
     private fun nextQuestion()
@@ -114,8 +121,9 @@ class GameViewModel : ViewModel() {
         _totalTime.value=totalTime.value!!+(COUNTDOWN_TIME/ONE_SECOND-currentTime.value!!)
         _score.value=score.value!!+1
         nextQuestion()
+        _timeLeft.value= COUNTDOWN_TIME
         timer.cancel()
-        timer.start()
+        startTimer()
     }
 
     private fun onIncorrect(optionSelected: Int=-1) {
@@ -129,5 +137,22 @@ class GameViewModel : ViewModel() {
         Log.i("GameViewModel","Cleared")
         super.onCleared()
         timer.cancel()
+    }
+    fun pauseTimer()
+    {
+        _timeLeft.value=currentTime.value!!*1000
+        timer.cancel()
+    }
+    fun startTimer()
+    {
+        timer=object: CountDownTimer(timeLeft.value!!, 1000)
+        {
+            override fun onTick(p0: Long) {
+                _currentTime.value=p0/ 1000
+            }
+            override fun onFinish() {
+                onIncorrect()
+            }
+        }.start()
     }
 }
