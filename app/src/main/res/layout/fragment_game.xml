@@ -78,6 +78,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"
             android:src="@drawable/ic_call"
+            android:onClick="@{()->gameViewModel.callLifeline()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/lifeline_time"
             app:layout_constraintHorizontal_bias="0.5"
@@ -90,6 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"
+            android:onClick="@{()->gameViewModel.timeLifeline()}"
             android:src="@drawable/ic_time"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/lifeline_skip"
@@ -103,6 +105,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"
             android:src="@drawable/ic_skip"
+            android:onClick="@{()->gameViewModel.skipLifeline()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/lifeline50"
             app:layout_constraintHorizontal_bias="0.5"
@@ -115,6 +118,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"
             android:src="@drawable/ic_50"
+            android:onClick="@{()->gameViewModel.fiftyLifeline()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -139,8 +143,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.75
-" />
+            app:layout_constraintGuide_percent="0.75" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"

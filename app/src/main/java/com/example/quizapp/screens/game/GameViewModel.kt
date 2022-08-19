@@ -2,19 +2,20 @@ package com.example.quizapp.screens.game
 import android.os.CountDownTimer
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class GameViewModel : ViewModel() {
+open class GameViewModel : ViewModel() {
     companion object{
         private const val ONE_SECOND=1000L
         private const val COUNTDOWN_TIME=35000L
     }
 
     data class Question(val text:String,val choices:MutableList<String>)
-    private lateinit var questionList:MutableList<Question>
 
+    private lateinit var questionList:MutableList<Question>
     private lateinit var timer:CountDownTimer
 
     private val _currentQuestionNo=MutableLiveData<Int>()
@@ -57,6 +58,18 @@ class GameViewModel : ViewModel() {
     val gameOver:LiveData<Boolean>
         get()=_gameOver
 
+    private val _fiftyIncorrect=MutableLiveData<MutableList<Int>>(mutableListOf())
+    val fiftyIncorrect:LiveData<MutableList<Int>>
+    get()=_fiftyIncorrect
+
+    private val _lifelineUsed=MutableLiveData(mutableMapOf("Call" to false,"Skip" to false,"Fifty" to false,"Time" to false))
+    val lifelineUsed:LiveData<MutableMap<String,Boolean>>
+        get()=_lifelineUsed
+
+    private val _optionStatus=MutableLiveData(mutableListOf("Neutral","Neutral","Neutral","Neutral"))
+    val optionStatus:LiveData<MutableList<String>>
+        get()=_optionStatus
+
     init{
         _score.value=0
         _totalTime.value=0L
@@ -64,30 +77,7 @@ class GameViewModel : ViewModel() {
         _timeLeft.value= COUNTDOWN_TIME
         resetQuestions()
         nextQuestion()
-
-//        startTimer(COUNTDOWN_TIME)
-//        timer=object: CountDownTimer(COUNTDOWN_TIME, 1000)
-//        {
-//            override fun onTick(p0: Long) {
-//                _currentTime.value=p0/ 1000
-//            }
-//            override fun onFinish() {
-//                onIncorrect()
-//            }
-//        }.start()
     }
-
-    private fun nextQuestion()
-    {
-        _currentAnswer.value=questionList[0].choices[0]
-        questionList[0].choices.shuffle()
-        _currentQuestion.value=questionList.removeAt(0)
-
-        _currentQuestionNo.value=currentQuestionNo.value!!+1
-        if(currentQuestionNo.value!!>10)
-            _gameOver.value=true
-    }
-
     private fun resetQuestions()
     {
         //First Option will always be the correct answer before shuffling
@@ -108,28 +98,57 @@ class GameViewModel : ViewModel() {
         questionList.shuffle()
     }
 
+    private fun nextQuestion()
+    {
+
+        resetOptions()
+        _currentAnswer.value=questionList[0].choices[0]
+        questionList[0].choices.shuffle()
+        _currentQuestion.value=questionList.removeAt(0)
+
+        _currentQuestionNo.value=currentQuestionNo.value!!+1
+        if(currentQuestionNo.value!!>10)
+            _gameOver.value=true
+    }
+    private fun resetOptions()
+    {
+        val temp=optionStatus.value
+        for (i in 0..3)
+            temp!![i]="Neutral"
+        _optionStatus.value=temp
+    }
+
+
     fun checkAnswer(optionSelected:Int)
     {
         if(_currentQuestion.value!!.choices[optionSelected]==_currentAnswer.value)
-            onCorrect()
+            onCorrect(optionSelected)
         else
             onIncorrect(optionSelected)
     }
 
-    private fun onCorrect()
+    private fun onCorrect(optionSelected: Int=-1)
     {
         _totalTime.value=totalTime.value!!+(COUNTDOWN_TIME/ONE_SECOND-currentTime.value!!)
         _score.value=score.value!!+1
-        nextQuestion()
-        _timeLeft.value= COUNTDOWN_TIME
-        timer.cancel()
-        startTimer()
+        val temp = optionStatus.value
+        temp!![optionSelected] = "Correct"
+        _optionStatus.value = temp
+        Handler().postDelayed({
+            timer.cancel()
+            nextQuestion()
+            restartTimer()}, 1000)
     }
 
     private fun onIncorrect(optionSelected: Int=-1) {
+        if(optionSelected>=0) {
+            val correctIndex = _currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
+            val temp = optionStatus.value
+            temp!![optionSelected] = "Incorrect"
+            temp!![correctIndex] = "Correct"
+            _optionStatus.value = temp
+        }
         timer.cancel()
-        _correctOption.value=_currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
-        _incorrectOption.value=optionSelected
         Handler().postDelayed({ _gameOver.value=true }, 3000)
     }
 
@@ -143,6 +162,12 @@ class GameViewModel : ViewModel() {
         _timeLeft.value=currentTime.value!!*1000
         timer.cancel()
     }
+    private fun restartTimer()
+    {
+        _timeLeft.value= COUNTDOWN_TIME
+        timer.cancel()
+        startTimer()
+    }
     fun startTimer()
     {
         timer=object: CountDownTimer(timeLeft.value!!, 1000)
@@ -154,5 +179,50 @@ class GameViewModel : ViewModel() {
                 onIncorrect()
             }
         }.start()
+    }
+
+    //Lifelines - Need to know how to move to another class
+    fun timeLifeline()
+    {
+        val temp=lifelineUsed.value
+        temp!!["Time"]=true
+        _lifelineUsed.value=temp
+
+        timer.cancel()
+        _timeLeft.value=_timeLeft.value!!+60000
+        startTimer()
+    }
+
+    fun skipLifeline()
+    {
+        val temp=lifelineUsed.value
+        temp!!["Skip"]=true
+        _lifelineUsed.value=temp
+        _currentQuestionNo.value=currentQuestionNo.value!!-1
+        restartTimer()
+        nextQuestion()
+    }
+    fun fiftyLifeline()
+    {
+        val lifelineTemp=lifelineUsed.value
+        lifelineTemp!!["Fifty"]=true
+        _lifelineUsed.value=lifelineTemp
+
+        val correctIndex=_currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
+        val incorrectIndices=(0..3).toMutableList()
+        incorrectIndices.remove(correctIndex)
+        incorrectIndices.shuffle()
+
+        val optionTemp=optionStatus.value
+        optionTemp!![incorrectIndices[0]]="Invisible"
+        optionTemp!![incorrectIndices[1]]="Invisible"
+        _optionStatus.value=optionTemp
+
+    }
+    fun callLifeline()
+    {
+        val temp=lifelineUsed.value
+        temp!!["Call"]=true
+        _lifelineUsed.value=temp
     }
 }

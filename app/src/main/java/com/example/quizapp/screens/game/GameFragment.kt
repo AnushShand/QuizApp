@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.quizapp.OptionButton
 import com.example.quizapp.R
 import com.example.quizapp.databinding.FragmentGameBinding
 
@@ -34,44 +35,47 @@ class GameFragment : Fragment() {
                 findNavController().navigate(GameFragmentDirections.actionGameFragmentToScoreFragment())
             }
         }
-        viewModel.incorrectOption.observe(viewLifecycleOwner) {
-            when (it) {
-                0 -> {
-                    binding.option1.setIncorrect(true)
+        viewModel.optionStatus.observe(viewLifecycleOwner){
+            for (i in 0..3)
+            {
+                val option = when(i){
+                    0-> binding.option1
+                    1-> binding.option2
+                    2-> binding.option3
+                    else-> binding.option4
                 }
-                1 -> {
-                    binding.option2.setIncorrect(true)
+                if(it[i]=="Neutral")
+                {
+                    option.setIncorrect(false)
+                    option.setCorrect(false)
+                    option.visibility=View.VISIBLE
+                    option.isClickable=true
                 }
-                2 -> {
-                    binding.option3.setIncorrect(true)
+                else if(it[i]=="Correct")
+                {
+                    option.setCorrect(true)
+                    option.isClickable=false
                 }
-                3 -> {
-                    binding.option4.setIncorrect(true)
+                else if(it[i]=="Incorrect")
+                {
+                    option.isClickable=false
+                    option.setIncorrect(true)
                 }
-                else -> {}
+                else
+                {
+                    option.visibility=View.INVISIBLE
+                }
             }
         }
-
-        viewModel.correctOption.observe(viewLifecycleOwner) {
-            when (it) {
-                0 -> {
-                    binding.option1.setCorrect(true)
-                    binding.option1.isClickable = false
-                }
-                1 -> {
-                    binding.option2.setCorrect(true)
-                    binding.option2.isClickable = false
-                }
-                2 -> {
-                    binding.option3.setCorrect(true)
-                    binding.option3.isClickable = false
-                }
-                3 -> {
-                    binding.option4.setCorrect(true)
-                    binding.option4.isClickable = false
-                }
-                else -> {}
-            }
+        viewModel.lifelineUsed.observe(viewLifecycleOwner){
+            if(it["Call"]!!)
+                binding.lifelineCall.visibility=View.GONE
+            if(it["Time"]!!)
+                binding.lifelineTime.visibility=View.GONE
+            if(it["Skip"]!!)
+                binding.lifelineSkip.visibility=View.GONE
+            if(it["Fifty"]!!)
+                binding.lifeline50.visibility=View.GONE
         }
         return binding.root
     }
@@ -79,13 +83,12 @@ class GameFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         viewModel.pauseTimer()
-        Log.i("GameFragment","Paused")
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.startTimer()
-        Log.i("GameFragment","Resumed")
     }
+
 
 }
