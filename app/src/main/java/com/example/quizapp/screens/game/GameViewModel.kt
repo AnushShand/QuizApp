@@ -1,8 +1,9 @@
 package com.example.quizapp.screens.game
+
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ open class GameViewModel : ViewModel() {
     companion object{
         private const val ONE_SECOND=1000L
         private const val COUNTDOWN_TIME=35000L
+        private const val MAX_QUESTIONS=10
     }
 
     data class Question(val text:String,val choices:MutableList<String>)
@@ -46,21 +48,9 @@ open class GameViewModel : ViewModel() {
     val currentAnswer:LiveData<String>
         get()=_currentAnswer
 
-    private val _incorrectOption=MutableLiveData<Int>()
-    val incorrectOption:LiveData<Int>
-        get()=_incorrectOption
-
-    private val _correctOption=MutableLiveData<Int>()
-    val correctOption:LiveData<Int>
-        get()=_correctOption
-
     private val _gameOver=MutableLiveData<Boolean>()
     val gameOver:LiveData<Boolean>
         get()=_gameOver
-
-    private val _fiftyIncorrect=MutableLiveData<MutableList<Int>>(mutableListOf())
-    val fiftyIncorrect:LiveData<MutableList<Int>>
-    get()=_fiftyIncorrect
 
     private val _lifelineUsed=MutableLiveData(mutableMapOf("Call" to false,"Skip" to false,"Fifty" to false,"Time" to false))
     val lifelineUsed:LiveData<MutableMap<String,Boolean>>
@@ -107,7 +97,7 @@ open class GameViewModel : ViewModel() {
         _currentQuestion.value=questionList.removeAt(0)
 
         _currentQuestionNo.value=currentQuestionNo.value!!+1
-        if(currentQuestionNo.value!!>10)
+        if(currentQuestionNo.value!!> MAX_QUESTIONS)
             _gameOver.value=true
     }
     private fun resetOptions()
@@ -134,7 +124,7 @@ open class GameViewModel : ViewModel() {
         val temp = optionStatus.value
         temp!![optionSelected] = "Correct"
         _optionStatus.value = temp
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             timer.cancel()
             nextQuestion()
             restartTimer()}, 1000)
@@ -145,11 +135,11 @@ open class GameViewModel : ViewModel() {
             val correctIndex = _currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
             val temp = optionStatus.value
             temp!![optionSelected] = "Incorrect"
-            temp!![correctIndex] = "Correct"
+            temp[correctIndex] = "Correct"
             _optionStatus.value = temp
         }
         timer.cancel()
-        Handler().postDelayed({ _gameOver.value=true }, 3000)
+        Handler(Looper.getMainLooper()).postDelayed({ _gameOver.value=true }, 3000)
     }
 
     override fun onCleared() {
@@ -170,10 +160,10 @@ open class GameViewModel : ViewModel() {
     }
     fun startTimer()
     {
-        timer=object: CountDownTimer(timeLeft.value!!, 1000)
+        timer=object: CountDownTimer(timeLeft.value!!, ONE_SECOND)
         {
             override fun onTick(p0: Long) {
-                _currentTime.value=p0/ 1000
+                _currentTime.value=p0/ ONE_SECOND
             }
             override fun onFinish() {
                 onIncorrect()
@@ -215,12 +205,13 @@ open class GameViewModel : ViewModel() {
 
         val optionTemp=optionStatus.value
         optionTemp!![incorrectIndices[0]]="Invisible"
-        optionTemp!![incorrectIndices[1]]="Invisible"
+        optionTemp[incorrectIndices[1]]="Invisible"
         _optionStatus.value=optionTemp
 
     }
     fun callLifeline()
     {
+
         val temp=lifelineUsed.value
         temp!!["Call"]=true
         _lifelineUsed.value=temp

@@ -1,11 +1,14 @@
 package com.example.quizapp.screens.game
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -68,8 +71,12 @@ class GameFragment : Fragment() {
             }
         }
         viewModel.lifelineUsed.observe(viewLifecycleOwner){
-            if(it["Call"]!!)
-                binding.lifelineCall.visibility=View.GONE
+            if(it["Call"]!!) {
+                binding.lifelineCall.visibility = View.GONE
+                val dialIntent = Intent(Intent.ACTION_DIAL)
+                dialIntent.data = Uri.parse("tel:" + "8344814819")
+                ContextCompat.startActivity(container!!.context,dialIntent,savedInstanceState)
+            }
             if(it["Time"]!!)
                 binding.lifelineTime.visibility=View.GONE
             if(it["Skip"]!!)
