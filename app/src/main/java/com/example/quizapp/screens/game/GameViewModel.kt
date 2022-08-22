@@ -52,7 +52,11 @@ open class GameViewModel : ViewModel() {
     val gameOver:LiveData<Boolean>
         get()=_gameOver
 
-    private val _lifelineUsed=MutableLiveData(mutableMapOf("Call" to false,"Skip" to false,"Fifty" to false,"Time" to false))
+    private val _callLifeline=MutableLiveData<Boolean>()
+    val callLifeline:LiveData<Boolean>
+        get()=_callLifeline
+
+    private val _lifelineUsed=MutableLiveData(mutableMapOf("Skip" to false,"Fifty" to false,"Time" to false))
     val lifelineUsed:LiveData<MutableMap<String,Boolean>>
         get()=_lifelineUsed
 
@@ -90,7 +94,6 @@ open class GameViewModel : ViewModel() {
 
     private fun nextQuestion()
     {
-
         resetOptions()
         _currentAnswer.value=questionList[0].choices[0]
         questionList[0].choices.shuffle()
@@ -131,15 +134,15 @@ open class GameViewModel : ViewModel() {
     }
 
     private fun onIncorrect(optionSelected: Int=-1) {
+        val correctIndex = _currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
+        val temp = optionStatus.value
+        temp!![correctIndex] = "Correct"
         if(optionSelected>=0) {
-            val correctIndex = _currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
-            val temp = optionStatus.value
-            temp!![optionSelected] = "Incorrect"
-            temp[correctIndex] = "Correct"
-            _optionStatus.value = temp
+            temp[optionSelected] = "Incorrect"
         }
+        _optionStatus.value = temp
         timer.cancel()
-        Handler(Looper.getMainLooper()).postDelayed({ _gameOver.value=true }, 3000)
+        Handler(Looper.getMainLooper()).postDelayed({ _gameOver.value=true }, 2000)
     }
 
     override fun onCleared() {
@@ -211,9 +214,6 @@ open class GameViewModel : ViewModel() {
     }
     fun callLifeline()
     {
-
-        val temp=lifelineUsed.value
-        temp!!["Call"]=true
-        _lifelineUsed.value=temp
+        _callLifeline.value=true
     }
 }

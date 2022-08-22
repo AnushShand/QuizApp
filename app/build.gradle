@@ -14,6 +14,7 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -65,4 +66,6 @@ dependencies {
     // Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$version_room")
 
+    //Timer animation
+    implementation('me.zhanghai.android.materialprogressbar:library:1.6.1')
 }

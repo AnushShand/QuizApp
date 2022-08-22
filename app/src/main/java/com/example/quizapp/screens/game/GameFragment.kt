@@ -1,9 +1,9 @@
 package com.example.quizapp.screens.game
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +13,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.quizapp.OptionButton
 import com.example.quizapp.R
 import com.example.quizapp.databinding.FragmentGameBinding
 
@@ -31,7 +30,6 @@ class GameFragment : Fragment() {
         viewModel.currentQuestionNo.observe(viewLifecycleOwner){
             (activity as AppCompatActivity).supportActionBar?.title = "Question $it/10"
         }
-
 
         viewModel.gameOver.observe(viewLifecycleOwner) {
             if (it) {
@@ -70,13 +68,16 @@ class GameFragment : Fragment() {
                 }
             }
         }
-        viewModel.lifelineUsed.observe(viewLifecycleOwner){
-            if(it["Call"]!!) {
-                binding.lifelineCall.visibility = View.GONE
+        viewModel.callLifeline.observe(viewLifecycleOwner)
+        {
+            if(it) {
                 val dialIntent = Intent(Intent.ACTION_DIAL)
                 dialIntent.data = Uri.parse("tel:" + "8344814819")
-                ContextCompat.startActivity(container!!.context,dialIntent,savedInstanceState)
+                ContextCompat.startActivity(container!!.context, dialIntent, savedInstanceState)
+                binding.lifelineCall.visibility = View.GONE
             }
+        }
+        viewModel.lifelineUsed.observe(viewLifecycleOwner){
             if(it["Time"]!!)
                 binding.lifelineTime.visibility=View.GONE
             if(it["Skip"]!!)
@@ -85,6 +86,16 @@ class GameFragment : Fragment() {
                 binding.lifeline50.visibility=View.GONE
         }
         return binding.root
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+        } else {
+            (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        }
     }
 
     override fun onPause() {

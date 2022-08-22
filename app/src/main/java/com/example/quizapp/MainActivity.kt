@@ -1,15 +1,20 @@
 package com.example.quizapp
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import com.example.quizapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        this.supportActionBar?.hide()
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            this.supportActionBar?.hide()
+        } else {
+            this.supportActionBar?.show()
+        }
+
         setContentView(R.layout.activity_main)
     }
 }
