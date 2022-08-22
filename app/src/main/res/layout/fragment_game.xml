@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.example.quizapp.OptionButton
+        <com.example.quizapp.util.OptionButton
             android:id="@+id/option1"
             android:onClick="@{()->gameViewModel.checkAnswer(0)}"
             android:text="@{gameViewModel.currentQuestion.choices[0]}"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@+id/question_text"
             style="@style/option_style"/>
 
-        <com.example.quizapp.OptionButton
+        <com.example.quizapp.util.OptionButton
             android:id="@+id/option2"
             android:onClick="@{()->gameViewModel.checkAnswer(1)}"
             android:text="@{gameViewModel.currentQuestion.choices[1]}"
@@ -50,7 +50,7 @@
             app:layout_constraintTop_toBottomOf="@+id/question_text"
             style="@style/option_style"/>
 
-        <com.example.quizapp.OptionButton
+        <com.example.quizapp.util.OptionButton
             android:id="@+id/option3"
             android:onClick="@{()->gameViewModel.checkAnswer(2)}"
             android:text="@{gameViewModel.currentQuestion.choices[2]}"
@@ -61,7 +61,7 @@
             app:layout_constraintTop_toBottomOf="@+id/option1"
             style="@style/option_style"/>
 
-        <com.example.quizapp.OptionButton
+        <com.example.quizapp.util.OptionButton
             android:id="@+id/option4"
             android:onClick="@{()->gameViewModel.checkAnswer(3)}"
             android:text="@{gameViewModel.currentQuestion.choices[3]}"

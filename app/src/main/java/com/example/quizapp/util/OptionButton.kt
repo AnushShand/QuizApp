@@ -1,7 +1,8 @@
-package com.example.quizapp
+package com.example.quizapp.util
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
+import com.example.quizapp.R
 
 
 class OptionButton:AppCompatButton{
