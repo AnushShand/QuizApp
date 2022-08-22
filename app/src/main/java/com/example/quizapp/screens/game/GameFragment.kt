@@ -22,6 +22,12 @@ class GameFragment : Fragment() {
     private lateinit var binding:FragmentGameBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
     {
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+        } else {
+            (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        }
         binding=DataBindingUtil.inflate(inflater,R.layout.fragment_game,container,false)
         viewModel = ViewModelProvider(this)[GameViewModel::class.java]
         binding.gameViewModel=viewModel

@@ -127,8 +127,8 @@ open class GameViewModel : ViewModel() {
         val temp = optionStatus.value
         temp!![optionSelected] = "Correct"
         _optionStatus.value = temp
+        timer.cancel()
         Handler(Looper.getMainLooper()).postDelayed({
-            timer.cancel()
             nextQuestion()
             restartTimer()}, 1000)
     }
