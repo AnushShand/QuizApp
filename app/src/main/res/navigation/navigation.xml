@@ -10,12 +10,31 @@
         android:label="fragment_game"
         tools:layout="@layout/fragment_game" >
         <action
-            android:id="@+id/action_gameFragment_to_scoreFragment"
-            app:destination="@id/scoreFragment" />
+            android:id="@+id/action_gameFragment_to_gameEndFragment"
+            app:destination="@id/gameEndFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameEndFragment"
+        android:name="com.example.quizapp.screens.gameEnd.GameEndFragment"
+        android:label="fragment_game_end"
+        tools:layout="@layout/fragment_game_end" >
+        <argument
+            android:name="score"
+            app:argType="integer" />
+        <argument
+            android:name="timeTaken"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_gameEndFragment_to_scoreFragment"
+            app:destination="@id/scoreFragment"
+            app:popUpTo="@id/gameFragment" />
     </fragment>
     <fragment
         android:id="@+id/scoreFragment"
         android:name="com.example.quizapp.screens.score.ScoreFragment"
-        android:label="fragment_score"
-        tools:layout="@layout/fragment_score" />
+        android:label="ScoreFragment" >
+        <action
+            android:id="@+id/action_scoreFragment_to_gameFragment"
+            app:destination="@id/gameFragment" />
+    </fragment>
 </navigation>

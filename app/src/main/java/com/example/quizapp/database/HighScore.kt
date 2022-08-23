@@ -9,7 +9,10 @@ import java.util.*
 @Entity(tableName = "High_Score_Table")
 data class HighScore(
     @PrimaryKey(autoGenerate = true)
-    val id:Long,
+    val id:Long=0,
+
+    @ColumnInfo
+    val name:String,
 
 //    @ColumnInfo
 //    val date:Date=Calendar.getInstance().time,
