@@ -122,7 +122,8 @@ open class GameViewModel : ViewModel() {
 
     private fun onCorrect(optionSelected: Int=-1)
     {
-        _totalTime.value=totalTime.value!!+(COUNTDOWN_TIME/ONE_SECOND-currentTime.value!!)
+        _totalTime.value=totalTime.value!!+(timeLeft.value!!/ONE_SECOND-currentTime.value!!)
+        Log.i("Game",totalTime.value.toString())
         _score.value=score.value!!+1
         val temp = optionStatus.value
         temp!![optionSelected] = "Correct"
@@ -145,11 +146,7 @@ open class GameViewModel : ViewModel() {
         Handler(Looper.getMainLooper()).postDelayed({ _gameOver.value=true }, 2000)
     }
 
-    override fun onCleared() {
-        Log.i("GameViewModel","Cleared")
-        super.onCleared()
-        timer.cancel()
-    }
+
     fun pauseTimer()
     {
         _timeLeft.value=currentTime.value!!*1000
@@ -172,6 +169,9 @@ open class GameViewModel : ViewModel() {
                 onIncorrect()
             }
         }.start()
+    }
+    fun doneNavigating(){
+        _gameOver.value=false
     }
 
     //Lifelines - Need to know how to move to another class
@@ -215,5 +215,11 @@ open class GameViewModel : ViewModel() {
     fun callLifeline()
     {
         _callLifeline.value=true
+    }
+
+    override fun onCleared() {
+        Log.i("GameViewModel","Cleared")
+        super.onCleared()
+        timer.cancel()
     }
 }
