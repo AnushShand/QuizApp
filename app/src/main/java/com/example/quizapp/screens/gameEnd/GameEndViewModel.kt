@@ -21,7 +21,7 @@ class GameEndViewModel(private val score:Int,
         database.insert(scoreCard)
         Log.i("GameEnd","$scoreCard inserted")
     }
-    fun databaseOperations()
+    fun insertLauncher()
     {
         uiScope.launch {
             val scoreCard=HighScore(name="Anush",score = score, timeTaken = timeTaken)
@@ -32,4 +32,6 @@ class GameEndViewModel(private val score:Int,
         super.onCleared()
         viewModelJob.cancel()
     }
+
+
 }
