@@ -3,7 +3,6 @@ package com.example.quizapp.screens.gameEnd
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.quizapp.database.HighScoreDao
-import com.example.quizapp.screens.score.ScoreViewModel
 
 class GameEndViewModelFactory(private val score:Int,
                               private val timeTaken:Long,

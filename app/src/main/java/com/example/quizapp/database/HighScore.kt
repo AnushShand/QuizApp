@@ -3,8 +3,6 @@ package com.example.quizapp.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDateTime
-import java.util.*
 
 @Entity(tableName = "High_Score_Table")
 data class HighScore(
@@ -23,5 +21,3 @@ data class HighScore(
     @ColumnInfo
     val timeTaken:Long
 )
-{
-}

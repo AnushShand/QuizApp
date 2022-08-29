@@ -24,14 +24,17 @@ open class GameViewModel : ViewModel() {
     val currentQuestionNo:LiveData<Int>
         get()=_currentQuestionNo
 
+    //currentTime is used to indicate the time left to answer the current question
     private val _currentTime=MutableLiveData<Long>()
     val currentTime:LiveData<Long>
         get()=_currentTime
 
+    //timeLeft is used to reset the timer when the app goes in the background or the time-lifeline is used
     private val _timeLeft=MutableLiveData<Long>()
     val timeLeft:LiveData<Long>
         get()=_timeLeft
 
+    //totalTime is used to store the total time taken by the current player to answer all the questions until now
     private val _totalTime=MutableLiveData<Long>()
     val totalTime:LiveData<Long>
         get()=_totalTime
@@ -44,9 +47,7 @@ open class GameViewModel : ViewModel() {
     val currentQuestion:LiveData<Question>
         get()=_currentQuestion
 
-    private val _currentAnswer=MutableLiveData<String>()
-    val currentAnswer:LiveData<String>
-        get()=_currentAnswer
+    private val currentAnswer=MutableLiveData<String>()
 
     private val _gameOver=MutableLiveData<Boolean>()
     val gameOver:LiveData<Boolean>
@@ -72,6 +73,8 @@ open class GameViewModel : ViewModel() {
         resetQuestions()
         nextQuestion()
     }
+
+    //This function is used to shuffle the list of questions
     private fun resetQuestions()
     {
         //First Option will always be the correct answer before shuffling
@@ -92,10 +95,11 @@ open class GameViewModel : ViewModel() {
         questionList.shuffle()
     }
 
+    //This function takes the current player to the next question
     private fun nextQuestion()
     {
         resetOptions()
-        _currentAnswer.value=questionList[0].choices[0]
+        currentAnswer.value=questionList[0].choices[0]
         questionList[0].choices.shuffle()
         _currentQuestion.value=questionList.removeAt(0)
 
@@ -103,6 +107,8 @@ open class GameViewModel : ViewModel() {
         if(currentQuestionNo.value!!> MAX_QUESTIONS)
             _gameOver.value=true
     }
+
+    //This function resets the status of all the options back to neutral for every new question
     private fun resetOptions()
     {
         val temp=optionStatus.value
@@ -111,10 +117,9 @@ open class GameViewModel : ViewModel() {
         _optionStatus.value=temp
     }
 
-
     fun checkAnswer(optionSelected:Int)
     {
-        if(_currentQuestion.value!!.choices[optionSelected]==_currentAnswer.value)
+        if(_currentQuestion.value!!.choices[optionSelected]==currentAnswer.value)
             onCorrect(optionSelected)
         else
             onIncorrect(optionSelected)
@@ -123,7 +128,6 @@ open class GameViewModel : ViewModel() {
     private fun onCorrect(optionSelected: Int=-1)
     {
         _totalTime.value=totalTime.value!!+(timeLeft.value!!/ONE_SECOND-currentTime.value!!)
-        Log.i("Game",totalTime.value.toString())
         _score.value=score.value!!+1
         val temp = optionStatus.value
         temp!![optionSelected] = "Correct"
@@ -135,7 +139,7 @@ open class GameViewModel : ViewModel() {
     }
 
     private fun onIncorrect(optionSelected: Int=-1) {
-        val correctIndex = _currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
+        val correctIndex = _currentQuestion.value!!.choices.indexOf(currentAnswer.value)
         val temp = optionStatus.value
         temp!![correctIndex] = "Correct"
         if(optionSelected>=0) {
@@ -174,7 +178,7 @@ open class GameViewModel : ViewModel() {
         _gameOver.value=false
     }
 
-    //Lifelines - Need to know how to move to another class
+    //Lifelines
     fun timeLifeline()
     {
         val temp=lifelineUsed.value
@@ -201,7 +205,7 @@ open class GameViewModel : ViewModel() {
         lifelineTemp!!["Fifty"]=true
         _lifelineUsed.value=lifelineTemp
 
-        val correctIndex=_currentQuestion.value!!.choices.indexOf(_currentAnswer.value)
+        val correctIndex=_currentQuestion.value!!.choices.indexOf(currentAnswer.value)
         val incorrectIndices=(0..3).toMutableList()
         incorrectIndices.remove(correctIndex)
         incorrectIndices.shuffle()

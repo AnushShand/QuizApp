@@ -1,10 +1,7 @@
 package com.example.quizapp.screens.gameEnd
 
-
 import android.util.Log
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.quizapp.database.HighScore
 import com.example.quizapp.database.HighScoreDao
 import kotlinx.coroutines.*
@@ -32,6 +29,4 @@ class GameEndViewModel(private val score:Int,
         super.onCleared()
         viewModelJob.cancel()
     }
-
-
 }

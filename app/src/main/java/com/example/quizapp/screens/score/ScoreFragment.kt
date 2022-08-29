@@ -13,13 +13,12 @@ import com.example.quizapp.R
 import com.example.quizapp.adapter.ScoreAdapter
 import com.example.quizapp.database.HighScoreDatabase
 import com.example.quizapp.databinding.FragmentScoreBinding
-import com.example.quizapp.screens.game.GameViewModel
-import com.example.quizapp.screens.gameEnd.GameEndFragmentDirections
 
+//This Fragment is used to implement the high-score screen of the App
 class ScoreFragment : Fragment() {
     private lateinit var binding: FragmentScoreBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
     {
         (activity as AppCompatActivity).supportActionBar?.title = "High Scores"
         val application= requireNotNull(this.activity).application
@@ -29,7 +28,7 @@ class ScoreFragment : Fragment() {
         binding= DataBindingUtil.inflate(inflater,R.layout.fragment_score,container,false)
         binding.scoreViewModel=viewModel
         binding.lifecycleOwner = this
-        binding.playAgain.setOnClickListener(){findNavController().navigate(ScoreFragmentDirections.actionScoreFragmentToGameFragment())}
+        binding.playAgain.setOnClickListener{findNavController().navigate(ScoreFragmentDirections.actionScoreFragmentToGameFragment())}
 
         viewModel.getData()
         viewModel.data.observe(viewLifecycleOwner) {

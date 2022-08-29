@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.quizapp.R
 import com.example.quizapp.databinding.FragmentGameBinding
 
+//This Fragment is used to implement the main quiz screen of the App
 class GameFragment : Fragment() {
 
     private lateinit var viewModel: GameViewModel
@@ -37,12 +38,15 @@ class GameFragment : Fragment() {
             (activity as AppCompatActivity).supportActionBar?.title = "Question $it/10"
         }
 
+        //Observe the gamOver live data and when it is set to true, navigate to the GameEndFragment
         viewModel.gameOver.observe(viewLifecycleOwner) {
             if (it) {
                 findNavController().navigate(GameFragmentDirections.actionGameFragmentToGameEndFragment(viewModel.score.value?:-1,viewModel.totalTime.value?:0L))
                 viewModel.doneNavigating()
             }
         }
+
+        //Observe the optionStatus("Neutral","Correct","Incorrect") and set it's visibility accordingly
         viewModel.optionStatus.observe(viewLifecycleOwner){
             for (i in 0..3)
             {
@@ -75,6 +79,18 @@ class GameFragment : Fragment() {
                 }
             }
         }
+
+        //Observe the lifeline status and set it's visibility based on if it has been used or not
+        viewModel.lifelineUsed.observe(viewLifecycleOwner){
+            if(it["Time"]!!)
+                binding.lifelineTime.visibility=View.GONE
+            if(it["Skip"]!!)
+                binding.lifelineSkip.visibility=View.GONE
+            if(it["Fifty"]!!)
+                binding.lifeline50.visibility=View.GONE
+        }
+
+        //The call lifeline has been observed separately as it is used to call an Intent
         viewModel.callLifeline.observe(viewLifecycleOwner)
         {
             if(it) {
@@ -84,17 +100,10 @@ class GameFragment : Fragment() {
                 binding.lifelineCall.visibility = View.GONE
             }
         }
-        viewModel.lifelineUsed.observe(viewLifecycleOwner){
-            if(it["Time"]!!)
-                binding.lifelineTime.visibility=View.GONE
-            if(it["Skip"]!!)
-                binding.lifelineSkip.visibility=View.GONE
-            if(it["Fifty"]!!)
-                binding.lifeline50.visibility=View.GONE
-        }
         return binding.root
     }
 
+    //This function has been overriden to hide the action bar if the screen is in landscape mode
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = resources.configuration.orientation
@@ -107,13 +116,11 @@ class GameFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.pauseTimer()
+        viewModel.pauseTimer() //Pause the timer when app is in the
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.startTimer()
     }
-
-
 }

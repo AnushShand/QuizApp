@@ -28,7 +28,7 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+//This Fragment is used to implement the game end screen of the App
 class GameEndFragment : Fragment() {
     private lateinit var binding: FragmentGameEndBinding
     private lateinit var viewModel:GameEndViewModel
@@ -53,11 +53,14 @@ class GameEndFragment : Fragment() {
         binding.shareButton.setOnClickListener{share(container)}
         return binding.root
     }
+
+    //This function creates a temporary file to store the screenshot
     private fun createImageFile():File{
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HH").format(Date())
         val storageDir: File = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
         return File.createTempFile("SS_$timeStamp",".jpeg",storageDir)
     }
+
     private fun share(container:ViewGroup?)
     {
         val ss: Bitmap = getScreenShotFromView(container!!.rootView)
@@ -80,7 +83,6 @@ class GameEndFragment : Fragment() {
     }
 
     private fun getScreenShotFromView(v: View): Bitmap{
-
         var screenshot: Bitmap? = null
         try {
             screenshot = Bitmap.createBitmap(v.measuredWidth, (v.measuredHeight*0.65).toInt(), Bitmap.Config.ARGB_8888)

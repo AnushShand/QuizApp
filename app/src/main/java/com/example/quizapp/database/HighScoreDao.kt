@@ -10,6 +10,7 @@ interface HighScoreDao {
     @Insert
     fun insert(highScore: HighScore)
 
+    //Reset the auto-generate id when the highscore table is cleared
     @Query("DELETE FROM sqlite_sequence WHERE name = 'High_Score_Table'")
     fun reset()
 
