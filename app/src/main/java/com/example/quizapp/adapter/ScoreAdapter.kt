@@ -22,7 +22,6 @@ class ScoreAdapter(private val context:Context,private val data:List<HighScore>,
 
     override fun onBindViewHolder(holder: ScoreViewHolder, position: Int) {
         val item=data[position]
-        Log.i("Score",item.id.toString())
         if(currentId==item.id) {
 
             holder.scoreView.setBackgroundColor(Color.parseColor("#FF03DAC5"))
