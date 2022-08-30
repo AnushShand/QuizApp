@@ -24,14 +24,14 @@ class ScoreAdapter(private val context:Context,private val data:List<HighScore>,
         val item=data[position]
         if(currentId==item.id) {
 
-            holder.scoreView.setBackgroundColor(Color.parseColor("#FF03DAC5"))
-            holder.nameView.setBackgroundColor(Color.parseColor("#FF03DAC5"))
-            holder.timeView.setBackgroundColor(Color.parseColor("#FF03DAC5"))
+            holder.scoreView.setBackgroundResource(R.color.purple)
+            holder.nameView.setBackgroundResource(R.color.purple)
+            holder.timeView.setBackgroundResource(R.color.purple)
         }
         else{
-            holder.scoreView.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
-            holder.nameView.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
-            holder.timeView.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
+            holder.scoreView.setBackgroundResource(R.color.score_background)
+            holder.nameView.setBackgroundResource(R.color.score_background)
+            holder.timeView.setBackgroundResource(R.color.score_background)
 
         }
         holder.scoreView.text=item.score.toString()
