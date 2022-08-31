@@ -4,7 +4,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import com.example.quizapp.R
 
-
+//This class implements a customised button which has the Correct and Incorrect Properties
 class OptionButton:AppCompatButton{
     constructor(context: Context,attributeSet: AttributeSet):super(context,attributeSet)
     private val STATE_CORRECT = intArrayOf(R.attr.state_correct)
