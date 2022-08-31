@@ -41,15 +41,8 @@ class GameEndFragment : Fragment() {
     private lateinit var name:String
     private val args:GameEndFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i("GameEnd","Created")
-    }
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
     {
-        Log.i("GameEnd","ViewCreated")
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
         (activity as AppCompatActivity).supportActionBar?.title = "Well Played!"
         val application= requireNotNull(this.activity).application
@@ -60,15 +53,13 @@ class GameEndFragment : Fragment() {
         binding= DataBindingUtil.inflate(inflater,R.layout.fragment_game_end,container,false)
         binding.endViewModel=viewModel
         binding.lifecycleOwner = this
-
+        binding.currentNameText.text=sharedNameViewModel.name.value.toString()
         binding.currentScoreText.text=args.score.toString()
-        binding.highScoreButton.setOnClickListener{navigateToScore()}
+        binding.highScoreButton.setOnClickListener{findNavController().navigate(GameEndFragmentDirections.actionGameEndFragmentToScoreFragment())}
         binding.takeImageButton.setOnClickListener{capturePhoto()}
         binding.shareButton.setOnClickListener{share(container)}
 
-        sharedNameViewModel.name.observe(viewLifecycleOwner){
-            binding.currentNameText.text=it
-        }
+        viewModel.insertLauncher()
         return binding.root
     }
 
@@ -126,12 +117,4 @@ class GameEndFragment : Fragment() {
                 binding.imageView.setImageBitmap(imageBitmap)
             }
         }
-
-    private fun navigateToScore()
-    {
-        viewModel.insertLauncher()
-        findNavController().navigate(GameEndFragmentDirections.actionGameEndFragmentToScoreFragment())
-    }
-
-
 }
