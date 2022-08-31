@@ -1,8 +1,6 @@
 package com.example.quizapp.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.quizapp.R
 import com.example.quizapp.database.HighScore
 
-class ScoreAdapter(private val context:Context,private val data:List<HighScore>,private val currentId:Long):RecyclerView.Adapter<ScoreAdapter.ScoreViewHolder>()
+class ScoreAdapter(private val data:List<HighScore>,private val currentId:Long):RecyclerView.Adapter<ScoreAdapter.ScoreViewHolder>()
 {
     class ScoreViewHolder(private val view:View):RecyclerView.ViewHolder(view)
     {

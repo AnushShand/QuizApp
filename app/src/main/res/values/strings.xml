@@ -3,4 +3,16 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="question">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid assumenda cupiditate illum ipsum molestiae nobis omnis quam, quasi sequi tenetur ullam vel velit voluptatum.</string>
+    <string name="title_text">Put Your Thinking Caps On</string>
+    <string name="name_hint">Enter Your Name to Play</string>
+    <string name="remember_my_name">Remember My Name?</string>
+    <string name="play_now">Play Now</string>
+    <string name="view_high_score">View High Score</string>
+    <string name="play">Play</string>
+    <string name="player">Player</string>
+    <string name="score">Score</string>
+    <string name="time">Time</string>
+    <string name="clear">Clear</string>
+    <string name="please_add_your_image">Please Add Your Image</string>
+    <string name="add_image">Add Image</string>
 </resources>

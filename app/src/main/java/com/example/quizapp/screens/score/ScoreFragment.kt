@@ -33,7 +33,7 @@ class ScoreFragment : Fragment() {
         viewModel.getData()
         viewModel.data.observe(viewLifecycleOwner) {
             binding.recyclerView.adapter =
-                ScoreAdapter(this.requireContext(), it,it.size.toLong())
+                ScoreAdapter(it,it.size.toLong())
         }
         return binding.root
     }

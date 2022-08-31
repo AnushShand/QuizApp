@@ -14,20 +14,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.quizapp.R
 import com.example.quizapp.database.HighScoreDatabase
 import com.example.quizapp.databinding.FragmentGameEndBinding
 import com.example.quizapp.screens.title.SharedNameViewModel
-import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -38,7 +34,6 @@ class GameEndFragment : Fragment() {
     private lateinit var binding: FragmentGameEndBinding
     private lateinit var viewModel:GameEndViewModel
     private lateinit var sharedNameViewModel: SharedNameViewModel
-    private lateinit var name:String
     private val args:GameEndFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View

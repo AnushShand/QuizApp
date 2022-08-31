@@ -20,8 +20,10 @@ class ScoreViewModel(private val database: HighScoreDao) : ViewModel() {
     {
         return withContext(Dispatchers.Default){database.getHighScore()}
     }
+
     private suspend fun clearData()
     {
+        //When clearing the data, also reset the index for auto-increment field ID
         withContext(Dispatchers.Default)
         {database.clear()
         database.reset()}
