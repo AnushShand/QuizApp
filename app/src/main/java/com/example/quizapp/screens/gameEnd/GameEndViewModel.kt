@@ -6,7 +6,7 @@ import com.example.quizapp.database.HighScore
 import com.example.quizapp.database.HighScoreDao
 import kotlinx.coroutines.*
 
-class GameEndViewModel(private val score:Int,
+class GameEndViewModel(private val name:String,private val score:Int,
                        private val timeTaken:Long,
                        private val database: HighScoreDao) : ViewModel()
 {
@@ -21,7 +21,7 @@ class GameEndViewModel(private val score:Int,
     fun insertLauncher()
     {
         uiScope.launch {
-            val scoreCard=HighScore(name="Anush",score = score, timeTaken = timeTaken)
+            val scoreCard=HighScore(name=name,score = score, timeTaken = timeTaken)
             insert(scoreCard)
         }
     }

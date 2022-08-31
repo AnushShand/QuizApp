@@ -18,12 +18,16 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.quizapp.R
 import com.example.quizapp.database.HighScoreDatabase
 import com.example.quizapp.databinding.FragmentGameEndBinding
+import com.example.quizapp.screens.title.SharedNameViewModel
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -33,25 +37,38 @@ import java.util.*
 class GameEndFragment : Fragment() {
     private lateinit var binding: FragmentGameEndBinding
     private lateinit var viewModel:GameEndViewModel
+    private lateinit var sharedNameViewModel: SharedNameViewModel
+    private lateinit var name:String
     private val args:GameEndFragmentArgs by navArgs()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.i("GameEnd","Created")
+    }
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
     {
+        Log.i("GameEnd","ViewCreated")
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
         (activity as AppCompatActivity).supportActionBar?.title = "Well Played!"
-
         val application= requireNotNull(this.activity).application
         val dataSource=HighScoreDatabase.getInstance(application).highScoreDao
-        val viewModelFactory= GameEndViewModelFactory(args.score,args.timeTaken,dataSource)
+        sharedNameViewModel= ViewModelProvider(requireActivity())[SharedNameViewModel::class.java]
+        val viewModelFactory= GameEndViewModelFactory(sharedNameViewModel.name.value.toString(),args.score,args.timeTaken,dataSource)
         viewModel=ViewModelProvider(this, factory = viewModelFactory)[GameEndViewModel::class.java]
         binding= DataBindingUtil.inflate(inflater,R.layout.fragment_game_end,container,false)
         binding.endViewModel=viewModel
         binding.lifecycleOwner = this
-        viewModel.insertLauncher()
 
         binding.currentScoreText.text=args.score.toString()
-        binding.highScoreButton.setOnClickListener{findNavController().navigate(GameEndFragmentDirections.actionGameEndFragmentToScoreFragment())}
+        binding.highScoreButton.setOnClickListener{navigateToScore()}
         binding.takeImageButton.setOnClickListener{capturePhoto()}
         binding.shareButton.setOnClickListener{share(container)}
+
+        sharedNameViewModel.name.observe(viewLifecycleOwner){
+            binding.currentNameText.text=it
+        }
         return binding.root
     }
 
@@ -109,5 +126,12 @@ class GameEndFragment : Fragment() {
                 binding.imageView.setImageBitmap(imageBitmap)
             }
         }
+
+    private fun navigateToScore()
+    {
+        viewModel.insertLauncher()
+        findNavController().navigate(GameEndFragmentDirections.actionGameEndFragmentToScoreFragment())
+    }
+
 
 }

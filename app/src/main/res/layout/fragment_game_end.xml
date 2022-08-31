@@ -74,7 +74,6 @@
             android:id="@+id/current_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Anush"
             android:textAlignment="center"
             android:textSize="40sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline4"
