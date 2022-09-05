@@ -1,5 +1,9 @@
 package com.example.quizapp.screens.title
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +22,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.quizapp.R
 import com.example.quizapp.database.SettingsDataStore
 import com.example.quizapp.databinding.FragmentTitleBinding
+import com.example.quizapp.util.cancelNotifications
+import com.example.quizapp.util.sendNotification
 import kotlinx.coroutines.launch
 
 
@@ -79,4 +86,52 @@ class TitleFragment : Fragment() {
         findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToScoreFragment())
     }
 
+    private fun createChannel(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_LOW
+            )
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            notificationChannel.description = "Resume Game"
+            val notificationManager = requireActivity().getSystemService(
+                NotificationManager::class.java
+            )
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+    private fun sendPauseNotification()
+    {
+        createChannel(
+            getString(R.string.game_notification_channel_id),
+            getString(R.string.game_notification_channel_name)
+        )
+        val notificationManager = ContextCompat.getSystemService(
+            requireContext(),
+            NotificationManager::class.java
+        ) as NotificationManager
+        notificationManager.sendNotification("Return to Game ${binding.editName.text}", requireContext())
+    }
+    private fun cancelNotification()
+    {
+        val notificationManager = ContextCompat.getSystemService(
+            requireContext(),
+            NotificationManager::class.java
+        ) as NotificationManager
+        notificationManager.cancelNotifications()
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        sendPauseNotification()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cancelNotification()
+    }
 }

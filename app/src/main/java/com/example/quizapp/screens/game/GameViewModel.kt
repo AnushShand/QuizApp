@@ -1,12 +1,18 @@
 package com.example.quizapp.screens.game
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.quizapp.util.sendNotification
+
 
 open class GameViewModel : ViewModel() {
     companion object{
@@ -220,6 +226,7 @@ open class GameViewModel : ViewModel() {
     {
         _callLifeline.value=true
     }
+
 
     override fun onCleared() {
         Log.i("GameViewModel","Cleared")
