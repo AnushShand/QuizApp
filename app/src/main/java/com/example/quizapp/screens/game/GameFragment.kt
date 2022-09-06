@@ -1,5 +1,6 @@
 package com.example.quizapp.screens.game
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -66,6 +67,9 @@ class GameFragment : Fragment() {
                 }
                 else if(it[i]=="Correct")
                 {
+                    val animator = ObjectAnimator.ofFloat(option, View.ROTATION, -360f, 0f)
+                    animator.duration = 1000
+                    animator.start()
                     option.setCorrect(true)
                     option.isClickable=false
                 }

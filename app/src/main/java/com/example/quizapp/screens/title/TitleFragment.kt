@@ -1,5 +1,6 @@
 package com.example.quizapp.screens.title
 
+import android.animation.ObjectAnimator
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.graphics.Color
