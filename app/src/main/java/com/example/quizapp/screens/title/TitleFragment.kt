@@ -34,7 +34,7 @@ class TitleFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         //Set the action-bar
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
-        (activity as AppCompatActivity).supportActionBar?.title = "QuizApp"
+        (activity as AppCompatActivity).supportActionBar?.title = "QuizApp1"
 
 
         settingsDataStore = SettingsDataStore(requireContext())
