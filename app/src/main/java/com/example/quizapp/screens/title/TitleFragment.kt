@@ -1,6 +1,5 @@
 package com.example.quizapp.screens.title
 
-import android.animation.ObjectAnimator
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.graphics.Color
@@ -43,7 +42,7 @@ class TitleFragment : Fragment() {
         binding= DataBindingUtil.inflate(inflater, R.layout.fragment_title,container,false)
         binding.playButton.setOnClickListener{playGame()}
         binding.scoreButton.setOnClickListener{viewScore()}
-
+        binding.about.setOnClickListener{findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToAboutFragment())}
         //Enable the Play and HighScore button only after the user has entered a name
         binding.editName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

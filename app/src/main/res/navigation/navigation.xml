@@ -50,5 +50,12 @@
         <action
             android:id="@+id/action_titleFragment_to_scoreFragment"
             app:destination="@id/scoreFragment" />
+        <action
+            android:id="@+id/action_titleFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.quizapp.screens.AboutFragment"
+        android:label="AboutFragment" />
 </navigation>
